@@ -59,6 +59,7 @@ Background="#FFF3F3F3">
                                                 <ColumnDefinition Width="auto"/>
                                             </Grid.ColumnDefinitions>
 
+                                           
                                             <TextBlock Grid.Column="1" Margin="3"
                                             Text="{Binding RelativeSource={RelativeSource AncestorType=TabItem}, Path=Header}" 
                                            VerticalAlignment="Center"  HorizontalAlignment="Center"
@@ -81,6 +82,7 @@ Background="#FFF3F3F3">
                         </Setter>
                     </Style>
                 </TabControl.Resources>
+
             </TabControl>
 
         <!--<StackPanel Orientation="Horizontal" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0,0,1,0">

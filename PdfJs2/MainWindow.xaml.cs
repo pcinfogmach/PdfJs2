@@ -16,17 +16,26 @@ namespace PdfJs2
     /// </summary>
     public partial class MainWindow : Window
     {
-        private readonly string settingsFilePath = "PdfJs2WindowStateSettings.json";
+        string settingsFilePath
+        {
+            get
+            {
+                string appPath =  Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "PdfJs2");
+                if (!Directory.Exists(appPath)) { Directory.CreateDirectory(appPath); }
+                return Path.Combine(appPath,  "PdfJs2WindowStateSettings.json");
+            }
+        } 
+        bool isCalledByFile = false;
         public MainWindow()
         {
             InitializeComponent();
-            Loaded += (s, e) => { openFile(); };
         }
 
         public MainWindow(string filePath)
         {
+            isCalledByFile = true;
             InitializeComponent();
-            openPdfFile(filePath);
+            openPdfFile(filePath);  
         }
 
         protected override void OnSourceInitialized(EventArgs e)
@@ -35,16 +44,45 @@ namespace PdfJs2
 
             if (File.Exists(settingsFilePath))
             {
-                var json = File.ReadAllText(settingsFilePath);
-                var windowStateSettings = JsonSerializer.Deserialize<WindowStateSettings>(json);
-
-                if (windowStateSettings != null)
+                try
                 {
-                    this.Top = Math.Max(SystemParameters.VirtualScreenTop, Math.Min(windowStateSettings.Top, SystemParameters.VirtualScreenHeight - this.Height));
-                    this.Left = Math.Max(SystemParameters.VirtualScreenLeft, Math.Min(windowStateSettings.Left, SystemParameters.VirtualScreenWidth - this.Width));
-                    this.Width = windowStateSettings.Width;
-                    this.Height = windowStateSettings.Height;
-                    this.WindowState = windowStateSettings.WindowState;
+                    var json = File.ReadAllText(settingsFilePath);
+                    var windowStateSettings = JsonSerializer.Deserialize<WindowStateSettings>(json);
+
+                    if (windowStateSettings != null)
+                    {
+                        this.Top = Math.Max(SystemParameters.VirtualScreenTop, Math.Min(windowStateSettings.Top, SystemParameters.VirtualScreenHeight - this.Height));
+                        this.Left = Math.Max(SystemParameters.VirtualScreenLeft, Math.Min(windowStateSettings.Left, SystemParameters.VirtualScreenWidth - this.Width));
+                        this.Width = windowStateSettings.Width;
+                        this.Height = windowStateSettings.Height;
+                        this.WindowState = windowStateSettings.WindowState;
+
+                        //if (!isCalledByFile)
+                        //{
+                            if (windowStateSettings.OpenFilesState.Count > 0)
+                            {
+                                foreach (string file in windowStateSettings.OpenFilesState)
+                                {
+                                    openPdfFile(file);
+                                }
+                            }
+                            else
+                            {
+                                openFile();
+                            }
+                        //}
+
+                        // Set the selected tab index
+                        if (!isCalledByFile && windowStateSettings.SelectedTabIndex >= 0 && windowStateSettings.SelectedTabIndex < tabControl.Items.Count)
+                        {
+                            tabControl.SelectedIndex = windowStateSettings.SelectedTabIndex;
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    // Handle exceptions (logging, show message, etc.)
+                    MessageBox.Show($"Error loading settings: {ex.Message}");
                 }
             }
         }
@@ -55,8 +93,20 @@ namespace PdfJs2
 
             var windowStateSettings = new WindowStateSettings
             {
-                WindowState = this.WindowState
+                WindowState = this.WindowState,
+                SelectedTabIndex = tabControl.SelectedIndex // Save the selected tab index
             };
+
+            // Ensure the OpenFilesState list is initialized
+            windowStateSettings.OpenFilesState = new List<string>();
+
+            foreach (TabItem tabItem in tabControl.Items)
+            {
+                if (tabItem?.Content is PdfViewer pdfViewer)
+                {
+                    windowStateSettings.OpenFilesState.Add(pdfViewer.pdfPath);
+                }
+            }
 
             if (this.WindowState == WindowState.Normal) // Save only if window is not maximized/minimized
             {
@@ -67,9 +117,18 @@ namespace PdfJs2
             }
 
             // Serialize settings to JSON
-            var json = JsonSerializer.Serialize(windowStateSettings, new JsonSerializerOptions { WriteIndented = true });
-            File.WriteAllText(settingsFilePath, json);
+            try
+            {
+                var json = JsonSerializer.Serialize(windowStateSettings, new JsonSerializerOptions { WriteIndented = true });
+                File.WriteAllText(settingsFilePath, json);
+            }
+            catch (Exception ex)
+            {
+                // Handle exceptions (logging, show message, etc.)
+                MessageBox.Show($"Error saving settings: {ex.Message}");
+            }
         }
+
 
         void openFile()
         {
@@ -91,24 +150,20 @@ namespace PdfJs2
             NoTabsLeftMessage();
         }
 
-        void openPdfFile(string filePath)
+        public void openPdfFile(string filePath)
         {
-            string fileName = Path.GetFileName(filePath);
-            string appPath = AppDomain.CurrentDomain.BaseDirectory;
-            string targetFolder = Path.Combine(appPath, "pdfjs", "web");
-            if (!Directory.Exists(targetFolder)) Directory.CreateDirectory(targetFolder);
-            string targetPath = Path.Combine(targetFolder, fileName);
-
-            File.Copy(filePath, targetPath, true); // Copy the selected PDF file to the pdfjs folder
-
-            var pdfViewer = new PdfViewer(filePath);
-            pdfViewer.WebMessageReceived += Viewer_WebMessageReceived;
-            tabControl.Items.Add(new TabItem
+            try
             {
-                Header = fileName,
-                Content = pdfViewer,
-                IsSelected = true,
-            });
+                TabItem tabItem = new TabItem();
+                var pdfViewer = new PdfViewer(filePath, tabItem);
+                pdfViewer.WebMessageReceived += Viewer_WebMessageReceived;
+                tabControl.Items.Add(tabItem);
+                tabItem.IsSelected = true;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
         private void Viewer_WebMessageReceived(object? sender, CoreWebView2WebMessageReceivedEventArgs e)
@@ -156,7 +211,7 @@ namespace PdfJs2
                     this.Close();
                 else
                     openFile();
-            }         
+            }
         }
 
         private void XButton_Click(object sender, RoutedEventArgs e)
@@ -182,13 +237,5 @@ namespace PdfJs2
     }
 
 
-    public class WindowStateSettings
-    {
-        public double Top { get; set; }
-        public double Left { get; set; }
-        public double Width { get; set; }
-        public double Height { get; set; }
-        [JsonConverter(typeof(JsonStringEnumConverter))]
-        public System.Windows.WindowState WindowState { get; set; }
-    }
+
 }

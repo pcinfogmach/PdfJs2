@@ -10,11 +10,32 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Include="PdfIcon.ico" />
+    <None Remove="Logo.png" />
+    <None Remove="PdfIcon.ico" />
+    <None Remove="pdfjs.zip" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\PdfJs2\PdfJs2.csproj" />
+    <Content Include="PdfIcon.ico" />
+    <Content Include="pdfjs.zip">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.2849.39" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Logo.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="MainWindow.xaml">
+      <SubType>Designer</SubType>
+    </Page>
   </ItemGroup>
 
 </Project>
