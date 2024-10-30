@@ -1,0 +1,117 @@
+﻿<Window x:Class="PdfJs2.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:PdfJs2"
+        xmlns:wv="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
+        mc:Ignorable="d"
+        FlowDirection="RightToLeft"
+        Title="" Height="450" Width="800"
+        MouseDown="Window_MouseDown">
+
+    <!--<WindowChrome.WindowChrome>
+        <WindowChrome GlassFrameThickness="0" CornerRadius="0" CaptionHeight="0"/>
+    </WindowChrome.WindowChrome>-->
+
+    <Border Background="#FFF3F3F3">
+
+        <Grid>
+            <TabControl x:Name="tabControl" Grid.Row="1" Margin="0" Padding="0" BorderThickness="0"
+Background="#FFF3F3F3">
+                <TabControl.Resources>
+                    <!-- Style for TabItem -->
+                    <Style TargetType="TabItem">
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate>
+                                    <Border Padding="3" BorderBrush="LightBlue">
+                                        <Border.Style>
+                                            <Style TargetType="Border">
+                                                <Setter Property="Background" Value="#FFF3F3F3" />
+                                                <Style.Triggers>
+                                                    <DataTrigger 
+                                Binding="{Binding IsSelected, 
+                                RelativeSource={RelativeSource AncestorType=TabItem}}" 
+                                Value="True">
+                                                        <Setter Property="Background">
+                                                            <Setter.Value>
+                                                                <SolidColorBrush Color="{DynamicResource {x:Static SystemColors.ActiveBorderColorKey}}" Opacity="0.2"/>
+                                                            </Setter.Value>
+                                                        </Setter>
+                                                        <Setter Property="BorderThickness" Value="0,2,0,0"/>
+                                                    </DataTrigger>
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter Property="Background">
+                                                            <Setter.Value>
+                                                                <SolidColorBrush Color="{DynamicResource {x:Static SystemColors.ActiveBorderColorKey}}" Opacity="0.5"/>
+                                                            </Setter.Value>
+                                                        </Setter>
+                                                    </Trigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Border.Style>
+
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="auto"/>
+                                            </Grid.ColumnDefinitions>
+
+                                            <TextBlock Grid.Column="1" Margin="3"
+                                            Text="{Binding RelativeSource={RelativeSource AncestorType=TabItem}, Path=Header}" 
+                                           VerticalAlignment="Center"  HorizontalAlignment="Center"
+                                           LineStackingStrategy="BlockLineHeight" LineHeight="10"/>
+
+                                            <Button Grid.Column="2"
+                                                Height="auto" Width="auto"
+                                                BorderThickness="0" Background="Transparent"
+                                                Margin="3"
+                                                HorizontalAlignment="Center" VerticalAlignment="Center" VerticalContentAlignment="Center"
+                                                Tag="{Binding RelativeSource={RelativeSource AncestorType=TabItem}}"
+                                                Click="X_Button_Click">
+                                                <TextBlock Text="x" Padding="0" Margin="0" VerticalAlignment="Center"
+                       LineStackingStrategy="BlockLineHeight" LineHeight="10"/>
+                                            </Button>
+                                        </Grid>
+                                    </Border>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </TabControl.Resources>
+            </TabControl>
+
+        <!--<StackPanel Orientation="Horizontal" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0,0,1,0">
+                <StackPanel.Resources>
+                    <Style TargetType="Button">
+                    <Setter Property="Background" Value="Transparent"/>
+                    <Setter Property="BorderThickness" Value="0"/>
+                    <Setter Property="VerticalAlignment" Value="Center"/>
+                    <Setter Property="VerticalContentAlignment" Value="Center"/>
+                    <Setter Property="Padding" Value="5"/>
+                        <Setter Property="IsHitTestVisible" Value="True"/>
+                    </Style>
+                <Style TargetType="TextBlock">
+                    <Setter Property="LineStackingStrategy" Value="BlockLineHeight"/>
+                    <Setter Property="VerticalAlignment" Value="Center"/>
+                </Style>
+            </StackPanel.Resources>
+
+            <Button x:Name="MinimizeButton" Click="MinimizeButton_Click" Margin="50,0,0,0">
+                <TextBlock Text="‒" FontWeight="Bold" LineHeight="12"/>
+            </Button>
+            <Button x:Name="MaximizeButton" Click="MaximizeButton_Click">
+                <TextBlock Text="🗖" LineHeight="12"/>
+            </Button>
+            <Button x:Name="XButton" Click="XButton_Click">
+                <TextBlock Text="Ⅹ"/>
+            </Button>
+
+        </StackPanel>-->
+    </Grid>
+
+    </Border>
+
+</Window>
