@@ -36,7 +36,7 @@ namespace MyPdf
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                //MessageBox.Show(ex.Message);
             }
             base.OnStartup(e);
         }
@@ -85,7 +85,7 @@ namespace MyPdf
                     }
                     catch (Exception ex)
                     {
-                        MessageBox.Show($"Pipe server error: {ex.Message}");
+                        //MessageBox.Show($"Pipe server error: {ex.Message}");
                     }
                 }
             });
@@ -109,7 +109,7 @@ namespace MyPdf
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show($"Failed to communicate with the running instance: {ex.Message}");
+                    //MessageBox.Show($"Failed to communicate with the running instance: {ex.Message}");
                 }
             }
         }

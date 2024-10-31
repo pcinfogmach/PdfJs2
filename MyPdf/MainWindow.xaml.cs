@@ -59,18 +59,18 @@ namespace PdfJs2
 
                         //if (!isCalledByFile)
                         //{
-                            if (windowStateSettings.OpenFilesState.Count > 0)
-                            {
-                                foreach (string file in windowStateSettings.OpenFilesState)
-                                {
-                                    openPdfFile(file);
-                                }
-                            }
-                            else if (!isCalledByFile)
-                            {
-                                 openPdfFile(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, ".pdf"));
-                            }
                         //}
+                        if (windowStateSettings.OpenFilesState.Count > 0)
+                        {
+                            foreach (string file in windowStateSettings.OpenFilesState)
+                            {
+                                openPdfFile(file);
+                            }
+                        }
+                        else if (!isCalledByFile)
+                        {
+                            openPdfFile(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, ".pdf"));
+                        }
 
                         // Set the selected tab index
                         if (!isCalledByFile && windowStateSettings.SelectedTabIndex >= 0 && windowStateSettings.SelectedTabIndex < tabControl.Items.Count)
@@ -78,12 +78,21 @@ namespace PdfJs2
                             tabControl.SelectedIndex = windowStateSettings.SelectedTabIndex;
                         }
                     }
+                    else
+                    {
+                        openPdfFile(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, ".pdf"));
+                    }
+
                 }
                 catch (Exception ex)
                 {
                     // Handle exceptions (logging, show message, etc.)
-                    MessageBox.Show($"Error loading settings: {ex.Message}");
+                    //MessageBox.Show($"Error loading settings: {ex.Message}");
                 }
+            }
+            else
+            {
+                openPdfFile(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, ".pdf"));
             }
         }
 
@@ -125,7 +134,16 @@ namespace PdfJs2
             catch (Exception ex)
             {
                 // Handle exceptions (logging, show message, etc.)
-                MessageBox.Show($"Error saving settings: {ex.Message}");
+                //MessageBox.Show($"Error saving settings: {ex.Message}");
+            }
+
+            string[] pdfFiles = Directory.GetFiles(ZipHelper.GetViewerDirectory(), "*.pdf", SearchOption.AllDirectories);
+
+            // Loop through and delete each file
+            foreach (string pdfFile in pdfFiles)
+            {
+                try {  File.Delete(pdfFile);  }
+                catch (Exception ex)  {   Console.WriteLine($"Error deleting {pdfFile}: {ex.Message}"); }
             }
         }
 
@@ -145,7 +163,7 @@ namespace PdfJs2
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                //MessageBox.Show(ex.Message);
             }
             NoTabsLeftMessage();
         }
@@ -167,7 +185,7 @@ namespace PdfJs2
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                //MessageBox.Show(ex.Message);
             }
         }
 
@@ -186,7 +204,7 @@ namespace PdfJs2
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                //MessageBox.Show(ex.Message);
             }
         }
 
@@ -203,6 +221,12 @@ namespace PdfJs2
                 PdfViewer pdfViewer = tabItem.Content as PdfViewer;
                 if (pdfViewer != null) pdfViewer.Dispose();
                 tabControl.Items.Remove(tabItem);
+                string filePath = Path.Combine(ZipHelper.GetViewerDirectory(), "web", Path.GetFileName(pdfViewer.pdfPath));
+                if (File.Exists(filePath)) 
+                {
+                    File.Delete(filePath); 
+                }
+                
                 NoTabsLeftMessage();
             }
         }
@@ -212,7 +236,7 @@ namespace PdfJs2
             if (tabControl.Items.Count == 0)
             {
                 openPdfFile(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, ".pdf"));
-                //var result = MessageBox.Show("אין ספרים פתוחים, האם ברצונך לסגור את התוכנה?", "אין ספרים פתוחים", MessageBoxButton.YesNo, MessageBoxImage.None, MessageBoxResult.Yes, MessageBoxOptions.RightAlign | MessageBoxOptions.RtlReading);
+                //var result = //MessageBox.Show("אין ספרים פתוחים, האם ברצונך לסגור את התוכנה?", "אין ספרים פתוחים", MessageBoxButton.YesNo, MessageBoxImage.None, MessageBoxResult.Yes, MessageBoxOptions.RightAlign | MessageBoxOptions.RtlReading);
                 //if (result == MessageBoxResult.Yes)
                 //this.Close();
                 //else

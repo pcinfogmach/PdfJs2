@@ -26,7 +26,7 @@ namespace PdfJs2
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"An error occurred: {ex.Message}");
+                //MessageBox.Show($"An error occurred: {ex.Message}");
             }
 
             return extractPath;

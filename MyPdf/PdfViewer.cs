@@ -29,7 +29,7 @@ namespace PdfJs2
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                //MessageBox.Show(ex.Message);
             }
         }
 
@@ -45,7 +45,7 @@ namespace PdfJs2
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                //MessageBox.Show(ex.Message);
             }
         }
 
@@ -66,7 +66,7 @@ namespace PdfJs2
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                //MessageBox.Show(ex.Message);
             }
         }
 
@@ -96,18 +96,27 @@ namespace PdfJs2
                     this.CoreWebView2.Settings.AreHostObjectsAllowed = true;
 
                     this.CoreWebView2.SetVirtualHostNameToFolderMapping("pdfjs", pdfViewerPath, CoreWebView2HostResourceAccessKind.DenyCors);
-
+                    
                     this.Source = new Uri(allowedUrl);
 
                     this.CoreWebView2.NavigationStarting += CoreWebView2_NavigationStarting; // Add a handler to restrict navigation
                     this.CoreWebView2.DownloadStarting += CoreWebView2_DownloadStarting;
                     this.CoreWebView2.WebMessageReceived += Viewer_WebMessageReceived;
+                    this.CoreWebView2.DOMContentLoaded += CoreWebView2_DOMContentLoaded;
                 };
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                //MessageBox.Show(ex.Message);
             }
+        }
+
+        private void CoreWebView2_DOMContentLoaded(object? sender, CoreWebView2DOMContentLoadedEventArgs e)
+        {
+            //pdfViewerPath = ZipHelper.GetViewerDirectory();
+            //string fileName = Path.GetFileName(pdfPath);
+            //string targetPath = Path.Combine(pdfViewerPath, "web", fileName);
+            //File.Delete(targetPath);
         }
 
         //private void DotAnimationTimer_Tick(object sender, EventArgs e)
@@ -143,12 +152,12 @@ namespace PdfJs2
                 }
                 else
                 {
-                    MessageBox.Show("No action defined!");
+                    //MessageBox.Show("No action defined!");
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                //MessageBox.Show(ex.Message);
             }
         }
 
@@ -162,7 +171,7 @@ namespace PdfJs2
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                //MessageBox.Show(ex.Message);
             }
         }
 
@@ -215,7 +224,7 @@ namespace PdfJs2
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                //MessageBox.Show(ex.Message);
             }
         }
     }
