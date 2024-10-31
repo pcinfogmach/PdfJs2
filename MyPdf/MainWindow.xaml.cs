@@ -20,7 +20,7 @@ namespace PdfJs2
         {
             get
             {
-                string appPath =  Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "MyPdf");
+                string appPath =  AppDomain.CurrentDomain.BaseDirectory;
                 if (!Directory.Exists(appPath)) { Directory.CreateDirectory(appPath); }
                 return Path.Combine(appPath,  "MyPdfWindowStateSettings.json");
             }
@@ -35,7 +35,7 @@ namespace PdfJs2
         {
             isCalledByFile = true;
             InitializeComponent();
-            openPdfFile(filePath);  
+            openPdfFile(filePath);
         }
 
         protected override void OnSourceInitialized(EventArgs e)
@@ -66,9 +66,9 @@ namespace PdfJs2
                                     openPdfFile(file);
                                 }
                             }
-                            else
+                            else if (!isCalledByFile)
                             {
-                                openFile();
+                                 openPdfFile(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, ".pdf"));
                             }
                         //}
 
@@ -137,7 +137,7 @@ namespace PdfJs2
                 var openFileDialog = new Microsoft.Win32.OpenFileDialog
                 {
                     Filter = "PDF Files (*.pdf)|*.pdf",
-                    Title = "Select a PDF File"
+                    Title = "בחר קובץ"
                 };
 
                 if (openFileDialog.ShowDialog() == true)
@@ -151,7 +151,7 @@ namespace PdfJs2
         }
 
         public void openPdfFile(string filePath)
-        {
+        {        
             try
             {
                 TabItem tabItem = new TabItem();
@@ -159,6 +159,11 @@ namespace PdfJs2
                 pdfViewer.WebMessageReceived += Viewer_WebMessageReceived;
                 tabControl.Items.Add(tabItem);
                 tabItem.IsSelected = true;
+                if (tabControl.Items.Count > 1)
+                {
+                    var LandingPage = tabControl.Items.Cast<TabItem>().FirstOrDefault(t => t is TabItem tab && string.IsNullOrEmpty(tab.Header.ToString()));
+                    removeTabItem(LandingPage);
+                }
             }
             catch (Exception ex)
             {
@@ -206,11 +211,12 @@ namespace PdfJs2
         {
             if (tabControl.Items.Count == 0)
             {
-                var result = MessageBox.Show("אין ספרים פתוחים, האם ברצונך לסגור את התוכנה?", "אין ספרים פתוחים", MessageBoxButton.YesNo, MessageBoxImage.None, MessageBoxResult.Yes, MessageBoxOptions.RightAlign | MessageBoxOptions.RtlReading);
-                if (result == MessageBoxResult.Yes)
-                    this.Close();
-                else
-                    openFile();
+                openPdfFile(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, ".pdf"));
+                //var result = MessageBox.Show("אין ספרים פתוחים, האם ברצונך לסגור את התוכנה?", "אין ספרים פתוחים", MessageBoxButton.YesNo, MessageBoxImage.None, MessageBoxResult.Yes, MessageBoxOptions.RightAlign | MessageBoxOptions.RtlReading);
+                //if (result == MessageBoxResult.Yes)
+                //this.Close();
+                //else
+                //    openFile();
             }
         }
 
@@ -221,7 +227,8 @@ namespace PdfJs2
 
         private void MaximizeButton_Click(object sender, RoutedEventArgs e)
         {
-            WindowState = (WindowState == WindowState.Normal) ? WindowState.Maximized : WindowState.Normal;
+            if (WindowState == WindowState.Normal) WindowState = WindowState.Maximized;
+            else WindowState= WindowState.Normal;
         }
 
         private void MinimizeButton_Click(object sender, RoutedEventArgs e)

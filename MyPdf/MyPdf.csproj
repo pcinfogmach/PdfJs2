@@ -10,12 +10,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove=".pdf" />
     <None Remove="Logo.png" />
     <None Remove="PdfIcon.ico" />
     <None Remove="pdfjs.zip" />
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include=".pdf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="PdfIcon.ico" />
     <Content Include="pdfjs.zip">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

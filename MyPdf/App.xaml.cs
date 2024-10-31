@@ -17,7 +17,7 @@ namespace MyPdf
         private MainWindow window;
 
         protected override void OnStartup(StartupEventArgs e)
-        {
+        {     
             try
             {
                 bool isFirstInstance;

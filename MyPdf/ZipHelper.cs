@@ -12,7 +12,7 @@ namespace PdfJs2
             
             try
             {
-                string appPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "MyPdf");
+                string appPath =  AppDomain.CurrentDomain.BaseDirectory;
                 if (!Directory.Exists(appPath)) { Directory.CreateDirectory(appPath); }
                 string zipPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "pdfjs.zip");
                 extractPath = Path.Combine(appPath, "pdfjs");

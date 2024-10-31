@@ -39,8 +39,7 @@ namespace PdfJs2
             {
                 tab.Content = this;
                 tabItem = tab;
-                tabItem.MinWidth = 100;
-                tabItem.Header = Path.GetFileName(filePath);
+                tabItem.Header = Path.GetFileNameWithoutExtension(filePath);
                 pdfPath = filePath;
                 InitializeViewer();
             }
@@ -88,6 +87,13 @@ namespace PdfJs2
                     //    dotAnimationTimer.Start(); // Start the animation timer
                     //};
                     //this.CoreWebView2.DOMContentLoaded += (s, e) => { if (dotAnimationTimer != null) dotAnimationTimer.Stop(); tabItem.Header = Path.GetFileName(pdfPath); };
+                    this.CoreWebView2.Settings.IsSwipeNavigationEnabled = false;
+                    //this.CoreWebView2.Settings.AreDefaultContextMenusEnabled = false;
+                    //this.CoreWebView2.Settings.AreBrowserAcceleratorKeysEnabled = false;
+                    this.CoreWebView2.Settings.AreDevToolsEnabled = false;
+                    this.CoreWebView2.Settings.IsStatusBarEnabled = false;
+                    this.CoreWebView2.Settings.IsScriptEnabled = true;
+                    this.CoreWebView2.Settings.AreHostObjectsAllowed = true;
 
                     this.CoreWebView2.SetVirtualHostNameToFolderMapping("pdfjs", pdfViewerPath, CoreWebView2HostResourceAccessKind.DenyCors);
 
